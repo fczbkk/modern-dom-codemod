@@ -47,6 +47,24 @@ const child = document.getElementById('child');
 child.remove();
 ```
 
+### replaceChild → replaceWith()
+
+Transforms the old `oldElement.parentNode.replaceChild(newElement, oldElement)` pattern to the modern `oldElement.replaceWith(newElement)` method.
+
+**Before:**
+```javascript
+const oldElement = document.getElementById('old');
+const newElement = document.createElement('div');
+oldElement.parentNode.replaceChild(newElement, oldElement);
+```
+
+**After:**
+```javascript
+const oldElement = document.getElementById('old');
+const newElement = document.createElement('div');
+oldElement.replaceWith(newElement);
+```
+
 ## Supported File Types
 
 - `.ts` - TypeScript files
