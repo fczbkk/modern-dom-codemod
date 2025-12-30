@@ -35,7 +35,7 @@ module.exports = function transformer(file, api) {
           ),
           [newElement]
         );
-        
+
         // Replace the old expression with the new one
         j(path).replaceWith(newExpression);
         hasModifications = true;
