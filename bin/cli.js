@@ -8,7 +8,8 @@ const glob = require('glob');
 
 const transformPaths = [
   path.join(__dirname, '../transforms/remove-child.js'),
-  path.join(__dirname, '../transforms/replace-child.js')
+  path.join(__dirname, '../transforms/replace-child.js'),
+  path.join(__dirname, '../transforms/insert-before.js')
 ];
 const patterns = process.argv.slice(2);
 
