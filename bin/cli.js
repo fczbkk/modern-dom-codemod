@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+// Using jscodeshift's internal Runner is the standard way to programmatically
+// run transforms, as documented in jscodeshift's own examples
 const { run: jscodeshift } = require('jscodeshift/src/Runner');
 const path = require('path');
 const glob = require('glob');
