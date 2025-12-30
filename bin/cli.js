@@ -6,7 +6,10 @@ const { run: jscodeshift } = require('jscodeshift/src/Runner');
 const path = require('path');
 const glob = require('glob');
 
-const transformPath = path.join(__dirname, '../transforms/remove-child.js');
+const transformPaths = [
+  path.join(__dirname, '../transforms/remove-child.js'),
+  path.join(__dirname, '../transforms/replace-child.js')
+];
 const patterns = process.argv.slice(2);
 
 if (patterns.length === 0) {
@@ -38,13 +41,18 @@ const options = {
   verbose: 2,
 };
 
-jscodeshift(transformPath, paths, options)
-  .then(result => {
+// Run all transforms sequentially
+async function runTransforms() {
+  for (const transformPath of transformPaths) {
+    const result = await jscodeshift(transformPath, paths, options);
     if (result.error) {
       console.error('Transform failed:', result.error);
       process.exit(1);
     }
-  })
+  }
+}
+
+runTransforms()
   .catch(err => {
     console.error('Error running transform:', err);
     process.exit(1);
