@@ -65,6 +65,26 @@ const newElement = document.createElement('div');
 oldElement.replaceWith(newElement);
 ```
 
+### insertBefore → before()
+
+Transforms the old `parentElement.insertBefore(newElement, refElement)` pattern to the modern `refElement.before(newElement)` method.
+
+**Before:**
+```javascript
+const parent = document.getElementById('parent');
+const newElement = document.createElement('div');
+const refElement = document.getElementById('ref');
+parent.insertBefore(newElement, refElement);
+```
+
+**After:**
+```javascript
+const parent = document.getElementById('parent');
+const newElement = document.createElement('div');
+const refElement = document.getElementById('ref');
+refElement.before(newElement);
+```
+
 ## Supported File Types
 
 - `.ts` - TypeScript files
