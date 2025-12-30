@@ -21,12 +21,12 @@ module.exports = function transformer(file, api) {
     })
     .forEach(path => {
       const callExpression = path.node;
-      
+
       // insertBefore takes two arguments: insertBefore(newElement, refElement)
       if (callExpression.arguments.length === 2) {
         const newElement = callExpression.arguments[0];
         const refElement = callExpression.arguments[1];
-        
+
         // Create new expression: refElement.before(newElement)
         const newExpression = j.callExpression(
           j.memberExpression(
