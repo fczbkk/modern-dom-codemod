@@ -85,6 +85,30 @@ const refElement = document.getElementById('ref');
 refElement.before(newElement);
 ```
 
+## ESLint Rules
+
+You can enforce these modern DOM methods via ESLint with the bundled plugin:
+
+```js
+// eslint.config.js
+const modernDom = require('modern-dom-codemod/eslint');
+
+module.exports = [
+  {
+    plugins: {
+      'modern-dom': modernDom,
+    },
+    rules: {
+      'modern-dom/remove-child': 'warn',
+      'modern-dom/replace-child': 'warn',
+      'modern-dom/insert-before': 'warn',
+    },
+  },
+];
+```
+
+Each rule is auto-fixable, so running `eslint --fix` rewrites the legacy DOM patterns to their modern equivalents.
+
 ## Supported File Types
 
 - `.ts` - TypeScript files
@@ -109,4 +133,3 @@ node bin/cli.js <file-pattern>
 ## License
 
 MIT
-
