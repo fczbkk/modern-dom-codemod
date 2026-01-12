@@ -22,7 +22,10 @@ if (patterns.length === 0) {
 // Expand glob patterns
 const paths = [];
 patterns.forEach(pattern => {
-  const matches = glob.sync(pattern, { nodir: true });
+  const matches = glob.sync(pattern, {
+    nodir: true,
+    ignore: '**/node_modules/**'
+  });
   if (matches.length > 0) {
     paths.push(...matches);
   } else {
