@@ -26,12 +26,7 @@ patterns.forEach(pattern => {
     nodir: true,
     ignore: '**/node_modules/**'
   });
-  if (matches.length > 0) {
-    paths.push(...matches);
-  } else {
-    // If no matches found, pass the pattern as-is (it might be a direct file path)
-    paths.push(pattern);
-  }
+  paths.push(...matches);
 });
 
 if (paths.length === 0) {
@@ -43,6 +38,7 @@ const options = {
   parser: 'tsx',
   extensions: 'ts,tsx,js,jsx',
   verbose: 2,
+  ignorePattern: '**/node_modules/**',
 };
 
 // Run all transforms sequentially
