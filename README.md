@@ -92,6 +92,17 @@ refElement.before(newElement);
 - `.js` - JavaScript files
 - `.jsx` - JavaScript React files
 
+## Performance
+
+The tool includes an optimization that pre-filters files using `grep` to skip files that don't contain any of the target DOM methods (`insertBefore`, `removeChild`, `replaceChild`). This significantly improves performance when running on large codebases, as it avoids parsing files that don't need transformation.
+
+When running the tool, you'll see a message like:
+```
+Skipped X file(s) without relevant DOM method calls
+```
+
+This optimization is automatic and requires no configuration. If `grep` is not available on your system, the tool will automatically fall back to processing all matched files.
+
 ## Development
 
 ### Running Tests

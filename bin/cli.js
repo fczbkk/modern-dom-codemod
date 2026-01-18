@@ -5,6 +5,8 @@
 const { run: jscodeshift } = require('jscodeshift/src/Runner');
 const path = require('path');
 const glob = require('glob');
+const { execSync } = require('child_process');
+const fs = require('fs');
 
 const transformPaths = [
   path.join(__dirname, '../transforms/remove-child.js'),
@@ -34,6 +36,43 @@ if (paths.length === 0) {
   process.exit(1);
 }
 
+// Filter files to only include those containing the target DOM methods
+// This optimization avoids parsing files that don't need transformation
+function filterRelevantFiles(filePaths) {
+  if (filePaths.length === 0) return [];
+
+  try {
+    // Create a regex pattern that matches any of the DOM methods we transform
+    const pattern = '\\.(insertBefore|removeChild|replaceChild)\\(';
+
+    // Use grep to quickly filter files containing the target patterns
+    // -l: print only filenames, -E: extended regex, --null: null-separated output
+    const grepCommand = `grep -lE '${pattern}' ${filePaths.map(f => `'${f}'`).join(' ')} 2>/dev/null || true`;
+    const result = execSync(grepCommand, { encoding: 'utf8', maxBuffer: 10 * 1024 * 1024 });
+
+    const relevantFiles = result.trim().split('\n').filter(f => f.length > 0);
+
+    const skipped = filePaths.length - relevantFiles.length;
+    if (skipped > 0) {
+      console.log(`Skipped ${skipped} file(s) without relevant DOM method calls`);
+    }
+
+    return relevantFiles;
+  } catch (error) {
+    // If grep fails or is not available, fall back to processing all files
+    console.warn('Warning: Could not pre-filter files with grep, processing all files');
+    return filePaths;
+  }
+}
+
+// Apply pre-filtering optimization
+const filteredPaths = filterRelevantFiles(paths);
+
+if (filteredPaths.length === 0) {
+  console.log('No files found with insertBefore, removeChild, or replaceChild calls');
+  process.exit(0);
+}
+
 const options = {
   parser: 'tsx',
   extensions: 'ts,tsx,js,jsx',
@@ -44,7 +83,7 @@ const options = {
 // Run all transforms sequentially
 async function runTransforms() {
   for (const transformPath of transformPaths) {
-    const result = await jscodeshift(transformPath, paths, options);
+    const result = await jscodeshift(transformPath, filteredPaths, options);
     if (result.error) {
       console.error('Transform failed:', result.error);
       process.exit(1);
